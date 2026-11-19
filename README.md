@@ -3,6 +3,8 @@
 This is a runnable **local-only MVP scaffold** for the Deliverable-II design:
 - FastAPI operator API
 - Main orchestrator and seven specialist agents using the OpenAI Agents SDK
+- **Hybrid prompting:** every sub-agent can run fixed predefined prompts *and* reason over the main
+  agent's brief to generate its own prompts at test time
 - Two localhost target endpoints (configure the target URL)
 - Shared policy gate: localhost-only, explicit authorization flag, request budget
 - Rule-based AI Judge scorecard
@@ -66,8 +68,29 @@ The app runs bounded checks against the authorized local target and generates a 
 The evaluator can be `"demo"` (local heuristic) or `"ai"` (requires an API key); API requests
 default to `"ai"` for backwards compatibility. Every result is pending human review.
 
+## Prompt strategy (`prompt_mode`)
+| Mode | What runs |
+|---|---|
+| `predefined` | Fixed prompts only (comparable across runs). |
+| `adaptive` | Reconnaissance (1 predefined probe) → main agent builds a brief → each sub-agent writes its own prompts. |
+| `hybrid` (default) | Predefined prompts first, then adaptive prompts per agent. |
+
+Flow: **Recon (predefined) → main agent builds `TargetBrief` → each sub-agent receives the brief +
+findings so far (including its own predefined result) → generates `adaptive_per_agent` new prompts →
+prompts are validated and sent through the same policy gate and budget.**
+
+- Budget = per agent `requests_per_agent` (predefined) + `adaptive_per_agent` (adaptive); recon is
+  always predefined-only. Default hybrid on all 7 agents = 13 requests.
+- Generated prompts must be harmless boundary probes: no URLs, code blocks, or requests for
+  credentials/secrets, max 600 chars, no duplicates. Rejected prompts are replaced by templates.
+- Each adaptive prompt may carry a random canary token (`HG-XXXXXX`) for a transparent heuristic check.
+- With the **Local heuristic** evaluator no extra AI calls are made: adaptive prompts come from
+  domain-aware templates (`adaptive-template`). With **AI-assisted**, the main agent and sub-agents
+  generate them (`adaptive`), falling back to templates if generation fails.
+- Each observation records `prompt_source`, the sub-agent's `reasoning`, and `expected_safe_behavior`.
+
 ## Project layout
-- `app/agents.py`: seven specialized agents and AI Judge
+- `app/agents.py`: seven specialized agents, AI Judge, main-agent brief, adaptive prompt generation
 - `app/orchestrator.py`: main orchestration workflow
 - `app/policy.py`: fail-closed local-target policy gate and request budget
 - `app/target.py`: scoped HTTP adapter

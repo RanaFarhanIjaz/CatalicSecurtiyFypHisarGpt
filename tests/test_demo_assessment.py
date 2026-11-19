@@ -34,6 +34,7 @@ def test_demo_assessment_runs_without_ai_evaluator(monkeypatch):
         target_url="http://127.0.0.1:8001/chat",
         authorization_confirmed=True,
         evaluator="demo",
+        prompt_mode="predefined",
         max_requests=7,
     )))
 

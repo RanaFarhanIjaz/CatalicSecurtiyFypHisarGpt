@@ -3,182 +3,1951 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f7fb">
-  <title>HisarGPT | Local assessment</title>
+  <meta name="theme-color" content="#10192f">
+  <title>HisarGPT · powered by Catalic Security</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      color-scheme: light;
-      --ink: #172338;
-      --muted: #6b7890;
-      --line: #e3e9f1;
-      --paper: #fff;
-      --canvas: #f5f7fb;
-      --blue: #315ee8;
-      --blue-dark: #2249c9;
-      --teal: #148a79;
-      --amber: #a46108;
-      --red: #b63a49;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      color-scheme: dark;
+      /* HCI-Compliant Ergonomic Palette (WCAG 2.1 AAA/AA Standard) */
+      --bg-void: #090d16;
+      --bg-matrix: #0d1424;
+      --bg-panel: rgba(15, 23, 42, 0.94);
+      --bg-panel-solid: #0f172a;
+      --bg-card: rgba(22, 32, 53, 0.75);
+      --bg-input: #0a0f1d;
+      
+      --cyan: #38bdf8;
+      --cyan-bright: #0284c7;
+      --cyan-glow: rgba(56, 189, 248, 0.25);
+      --cyan-dim: rgba(56, 189, 248, 0.12);
+      
+      --crimson: #f43f5e;
+      --crimson-glow: rgba(244, 63, 94, 0.25);
+      --crimson-dim: rgba(244, 63, 94, 0.12);
+      
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --emerald-dim: rgba(16, 185, 129, 0.12);
+      
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.25);
+      --amber-dim: rgba(245, 158, 11, 0.12);
+      
+      --purple: #8b5cf6;
+      --purple-dim: rgba(139, 92, 246, 0.15);
+      
+      /* High-Contrast Typography (Exceeds WCAG AAA 7:1) */
+      --text: #e2e8f0;
+      --text-bright: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --line: rgba(51, 65, 85, 0.55);
+      --line-bright: rgba(56, 189, 248, 0.35);
+      --line-subtle: rgba(255, 255, 255, 0.07);
+      
+      --sidebar: 272px;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
+
     * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: var(--canvas); }
-    button, input, select { font: inherit; }
+    
+    body {
+      margin: 0;
+      color: var(--text);
+      background-color: var(--bg-void);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.07) 0%, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(255, 0, 85, 0.04) 0%, transparent 45%),
+        linear-gradient(rgba(0, 240, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Custom Cyber Scrollbar */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg-void); }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.25); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); }
+
+    button, input, select, textarea { font: inherit; }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+    }
+
+    /* ── Cyber Sidebar ─────────────────────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 18px 20px;
+      background: rgba(7, 12, 24, 0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--line);
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.6);
+      z-index: 50;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 4px 6px 24px;
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid var(--line-subtle);
+      margin-bottom: 20px;
+    }
+
+    .logo svg {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.5));
+    }
+
+    .logo strong {
+      display: block;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--text-bright);
+      text-shadow: 0 0 14px var(--cyan-glow);
+    }
+
+    .logo span {
+      display: block;
+      margin-top: 3px;
+      color: var(--text-muted);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .logo em {
+      color: var(--cyan);
+      font-style: normal;
+      font-weight: 700;
+      text-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      color: var(--text-muted);
+      background: transparent;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .nav-btn:hover {
+      background: rgba(0, 240, 255, 0.06);
+      color: var(--text-bright);
+      border-color: rgba(0, 240, 255, 0.2);
+      transform: translateX(3px);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.14) 0%, rgba(0, 240, 255, 0.03) 100%);
+      color: var(--cyan);
+      border-color: rgba(0, 240, 255, 0.45);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.12), inset 3px 0 0 var(--cyan);
+    }
+
+    .count {
+      min-width: 22px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-btn.active .count {
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      border-color: rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+    }
+
+    .aside-foot {
+      margin-top: auto;
+      padding: 16px 8px 0;
+      color: var(--text-dim);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      border-top: 1px solid var(--line-subtle);
+    }
+
+    /* ── Workspace Header ───────────────────────────────────────── */
+    .workspace {
+      min-width: 0;
+      padding: 28px clamp(20px, 3.5vw, 48px) 56px;
+    }
+
     .topbar {
-      height: 72px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 clamp(20px, 5vw, 72px); background: var(--paper); border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 26px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
     }
-    .brand { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 750; letter-spacing: -.03em; }
-    .brand-mark {
-      width: 35px; height: 35px; display: grid; place-items: center; border-radius: 11px;
-      color: white; background: linear-gradient(145deg, #436df0, #263fc0); font-size: 18px;
+
+    .eyebrow {
+      margin: 0;
+      color: var(--cyan);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .top-note { color: var(--muted); font-size: 13px; }
-    main { width: min(1190px, calc(100% - 40px)); margin: 40px auto 64px; }
-    .hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
-    .eyebrow { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-    h1 { margin: 8px 0 9px; font-size: clamp(29px, 4vw, 40px); letter-spacing: -.055em; line-height: 1.1; }
-    .subtitle { margin: 0; max-width: 650px; color: var(--muted); font-size: 15px; line-height: 1.6; }
-    .scope-pill { flex-shrink: 0; padding: 9px 13px; border: 1px solid #cce9e2; border-radius: 999px; background: #effaf7; color: #157566; font-size: 12px; font-weight: 700; }
-    .layout { display: grid; grid-template-columns: minmax(270px, 350px) minmax(0, 1fr); align-items: start; gap: 22px; }
-    .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 8px 28px rgba(27, 46, 79, .035); }
-    .config { padding: 23px; }
-    .panel-title { margin: 0; font-size: 16px; letter-spacing: -.02em; }
-    .panel-copy { margin: 5px 0 22px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-    label { display: block; margin: 16px 0 7px; color: #34425a; font-size: 12px; font-weight: 700; }
-    input[type="url"], input[type="number"], select {
-      width: 100%; height: 43px; padding: 0 12px; color: var(--ink); border: 1px solid #dce3ed;
-      border-radius: 9px; background: #fff; outline: none;
+
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyan);
+      animation: pulse 2s infinite ease-in-out;
     }
-    input:focus, select:focus { border-color: #839bf0; box-shadow: 0 0 0 3px #315ee81b; }
-    .field-hint { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
+
+    h1 {
+      margin: 8px 0 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(26px, 3vw, 34px);
+      letter-spacing: -0.02em;
+      font-weight: 800;
+      color: var(--text-bright);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    }
+
+    .scope-pill {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 15px;
+      border: 1px solid rgba(0, 255, 136, 0.35);
+      border-radius: 8px;
+      background: rgba(0, 255, 136, 0.08);
+      color: var(--emerald);
+      font-family: 'Fira Code', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      box-shadow: 0 0 14px rgba(0, 255, 136, 0.15);
+    }
+
+    .scope-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* ── HCI Panels & Spacious Multi-Column Layout ──────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(560px, 1.3fr) minmax(460px, 1fr);
+      align-items: start;
+      gap: 28px;
+      max-width: 1760px;
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      position: relative;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), transparent);
+    }
+
+    .config, .results, .page {
+      padding: 24px 26px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+      color: var(--text-bright);
+    }
+
+    .panel-copy {
+      margin: 5px 0 16px;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    /* Form Section Chunks (HCI Cognitive Grouping) */
+    .form-section {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(51, 65, 85, 0.45);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-section.execution-section {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(56, 189, 248, 0.3);
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin: 0 0 6px;
+      color: #94a3b8;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+    }
+
+    input[type="url"], input[type="number"], input[type="text"], input[type="password"], select, textarea {
+      width: 100%;
+      padding: 0 14px;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #090e1a;
+      outline: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 12.5px;
+      transition: all 0.2s ease;
+    }
+
+    input[type="url"], input[type="number"], input[type="text"], input[type="password"], select {
+      height: 42px;
+    }
+
+    textarea {
+      min-height: 72px;
+      padding: 10px 14px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+      background: #0d1527;
+    }
+
+    select option {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+
+    .field-hint {
+      display: block;
+      margin-top: 5px;
+      color: #64748b;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    /* Presets Row */
+    .presets-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .preset-btn {
+      padding: 7px 12px;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      color: #cbd5e1;
+      background: #162035;
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .preset-btn:hover {
+      background: #1e293b;
+      color: #38bdf8;
+      border-color: #0284c7;
+    }
+
+    .preset-btn.primary {
+      background: rgba(2, 132, 199, 0.15);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #38bdf8;
+    }
+
+    .preset-btn.primary:hover {
+      background: rgba(2, 132, 199, 0.28);
+    }
+
+    /* ── Category Picker ───────────────────────────────────────── */
+    .agent-picker {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .agent-picker legend {
+      margin-bottom: 9px;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .agent-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 9px;
+    }
+
+    .agent-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 12px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #cbd5e1;
+      background: #111827;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .agent-option:hover {
+      border-color: #0284c7;
+      background: #162035;
+      color: #f8fafc;
+    }
+
+    .agent-option:has(input:checked) {
+      border-color: #0284c7;
+      background: rgba(2, 132, 199, 0.16);
+      color: #38bdf8;
+      box-shadow: 0 0 0 1px #0284c7;
+    }
+
+    .agent-option input, .consent input {
+      accent-color: #0284c7;
+    }
+
+    .agent-option input {
+      flex: 0 0 auto;
+      margin: 1px 0 0;
+    }
+
+    .budget-summary {
+      margin: 10px 0 0;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .budget-summary.invalid {
+      color: var(--crimson);
+      font-weight: 700;
+      text-shadow: 0 0 8px var(--crimson-glow);
+    }
+
     .consent {
-      display: flex; align-items: flex-start; gap: 10px; margin-top: 19px; padding: 12px;
-      border: 1px solid #f1dfbf; border-radius: 10px; background: #fffaf1;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      padding: 13px 15px;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 8px;
+      background: rgba(245, 158, 11, 0.08);
     }
-    .consent input { accent-color: var(--blue); margin: 2px 0 0; }
-    .consent label { margin: 0; color: #695837; font-size: 11px; font-weight: 500; line-height: 1.5; }
+
+    .consent label {
+      margin: 0;
+      color: #fde68a;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      line-height: 1.5;
+      text-transform: none;
+    }
+
+    /* ── HCI Primary Action Button ─────────────────────────────── */
     .run-button {
-      width: 100%; min-height: 45px; margin-top: 18px; border: 0; border-radius: 9px;
-      color: white; background: var(--blue); font-size: 13px; font-weight: 750; cursor: pointer;
-      transition: background .15s, transform .15s;
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #0284c7;
+      border-radius: 9px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .run-button:hover:not(:disabled) { background: var(--blue-dark); transform: translateY(-1px); }
-    .run-button:disabled { opacity: .58; cursor: wait; }
-    .safe-note { display: flex; gap: 8px; margin: 14px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
-    .safe-note span { color: var(--teal); }
-    .results { min-height: 430px; padding: 23px; }
-    .empty { min-height: 380px; display: grid; place-items: center; text-align: center; }
-    .empty-inner { max-width: 320px; }
-    .empty-icon { width: 56px; height: 56px; display: grid; place-items: center; margin: 0 auto 15px; border: 1px solid #e1e8f4; border-radius: 17px; background: #f7f9fd; color: var(--blue); font-size: 23px; }
-    .empty h2 { margin: 0 0 8px; font-size: 16px; }
-    .empty p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
-    .loading { min-height: 380px; display: grid; place-items: center; color: var(--muted); font-size: 13px; }
-    .spinner { width: 24px; height: 24px; margin: 0 auto 12px; border: 3px solid #dce5fc; border-top-color: var(--blue); border-radius: 50%; animation: spin .75s linear infinite; }
+
+    .run-button:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+
+    .run-button:disabled {
+      opacity: 0.5;
+      cursor: wait;
+      box-shadow: none;
+    }
+
+    .ghost {
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: var(--text);
+      background: rgba(14, 22, 42, 0.6);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .ghost:hover {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .safe-note {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 0;
+      color: var(--text-dim);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .safe-note span:first-child {
+      color: var(--emerald);
+    }
+
+    /* ── Results Container ─────────────────────────────────────── */
+    .results {
+      min-height: 460px;
+    }
+
+    .empty, .loading {
+      min-height: 320px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .empty-inner {
+      max-width: 380px;
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(0, 240, 255, 0.05);
+      color: var(--cyan);
+      font-size: 26px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+    }
+
+    .empty h2 {
+      margin: 0 0 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 17px;
+      letter-spacing: 0.02em;
+      color: var(--text-bright);
+    }
+
+    .empty p, .loading {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 16px;
+      border: 3px solid rgba(0, 240, 255, 0.2);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
     @keyframes spin { to { transform: rotate(360deg); } }
-    .error { margin: 20px 0; padding: 13px 15px; border: 1px solid #f3cbd0; border-radius: 10px; background: #fff5f6; color: #8d2935; font-size: 13px; line-height: 1.5; }
-    .result-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-    .result-head h2 { margin: 0; font-size: 18px; letter-spacing: -.025em; }
-    .result-meta { margin: 6px 0 0; color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
-    .download {
-      flex-shrink: 0; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px;
-      color: #34425a; background: white; text-decoration: none; font-size: 11px; font-weight: 700;
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.92); } }
+
+    .error {
+      margin: 0 0 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--crimson);
+      border-radius: 8px;
+      background: rgba(255, 0, 85, 0.08);
+      color: #ff6b8b;
+      font-family: 'Fira Code', monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.15);
     }
-    .download:hover { background: #f7f9fc; }
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 21px 0; }
-    .stat { min-width: 0; padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: #fbfcfe; }
-    .stat-label { display: block; color: var(--muted); font-size: 10px; font-weight: 650; }
-    .stat-value { display: block; margin-top: 6px; font-size: 18px; font-weight: 780; letter-spacing: -.04em; }
-    .stat-value small { color: var(--muted); font-size: 10px; font-weight: 550; letter-spacing: 0; }
-    .summary { padding: 14px; border: 1px solid #dce5fa; border-radius: 11px; background: #f7f9ff; }
-    .summary h3, .observations h3 { margin: 0 0 7px; font-size: 12px; }
-    .summary p { margin: 0; color: #53617a; font-size: 12px; line-height: 1.6; white-space: pre-wrap; }
-    .review { margin: 12px 0 0; color: var(--amber); font-size: 11px; font-weight: 700; }
-    .observations { margin-top: 20px; }
-    .observation { border-top: 1px solid var(--line); }
-    .observation summary { display: flex; align-items: center; gap: 9px; padding: 12px 2px; cursor: pointer; list-style: none; font-size: 12px; font-weight: 700; }
+
+    .ok {
+      margin: 0 0 16px;
+      padding: 13px 15px;
+      border: 1px solid var(--emerald);
+      border-radius: 8px;
+      background: rgba(0, 255, 136, 0.08);
+      color: var(--emerald);
+      font-family: 'Fira Code', monospace;
+      font-size: 12.5px;
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.15);
+    }
+
+    .result-head, .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .result-head h2, .toolbar h2 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      color: var(--text-bright);
+      text-shadow: 0 0 14px rgba(255, 255, 255, 0.2);
+    }
+
+    .result-meta {
+      margin: 6px 0 0;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    .download, .text-btn {
+      flex-shrink: 0;
+      padding: 9px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.08);
+      text-decoration: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+    }
+
+    .download:hover, .text-btn:hover {
+      background: rgba(0, 240, 255, 0.18);
+      border-color: var(--cyan);
+      box-shadow: 0 0 18px var(--cyan-glow);
+      color: var(--text-bright);
+    }
+
+    /* ── Cyber Stats HUD ───────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .stat {
+      min-width: 0;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(8, 14, 28, 0.85);
+      box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.03);
+      position: relative;
+    }
+
+    .stat::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 12px;
+      width: 24px;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--cyan);
+      text-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .stat-value small {
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 550;
+      letter-spacing: 0;
+    }
+
+    .summary {
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(8, 14, 30, 0.8);
+    }
+
+    .summary h3, .observations h3 {
+      margin: 0 0 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      color: var(--cyan);
+      letter-spacing: 0.04em;
+    }
+
+    .summary p {
+      margin: 0;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    .review {
+      margin: 14px 0 0;
+      color: var(--amber);
+      font-family: 'Fira Code', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .review::before {
+      content: "⚠";
+    }
+
+    /* ── Cyber Observations ────────────────────────────────────── */
+    .observations {
+      margin-top: 24px;
+    }
+
+    .observation {
+      border-top: 1px solid var(--line);
+      transition: background 0.15s;
+    }
+
+    .observation summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 4px;
+      cursor: pointer;
+      list-style: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--text-bright);
+    }
+
     .observation summary::-webkit-details-marker { display: none; }
-    .observation summary::after { content: "+"; margin-left: auto; color: var(--muted); font-size: 16px; }
-    .observation[open] summary::after { content: "−"; }
-    .badge { padding: 4px 7px; border-radius: 999px; background: #edf7f4; color: #167766; font-size: 9px; font-weight: 750; }
-    .badge.candidate { background: #fff3e1; color: #9c5d06; }
-    .observation-body { padding: 0 3px 13px; color: #53617a; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
-    .observation-body strong { color: #34425a; }
-    .observation-body p { margin: 5px 0; white-space: pre-wrap; }
-    footer { margin-top: 21px; color: #8994a6; font-size: 10px; text-align: center; }
-    @media (max-width: 760px) {
-      main { margin-top: 27px; }
-      .hero { align-items: flex-start; flex-direction: column; }
-      .layout { grid-template-columns: 1fr; }
-      .results { min-height: 320px; }
-      .empty, .loading { min-height: 260px; }
+    .observation summary::after {
+      content: "+";
+      margin-left: auto;
+      color: var(--cyan);
+      font-size: 18px;
+      font-weight: 700;
     }
-    @media (max-width: 420px) {
-      .topbar { height: 62px; padding: 0 17px; }
-      .top-note { font-size: 11px; }
-      main { width: calc(100% - 26px); }
-      .config, .results { padding: 17px; }
-      .stats { gap: 6px; }
-      .stat { padding: 10px; }
-      .stat-value { font-size: 15px; }
+    .observation[open] summary::after { content: "−"; }
+
+    .badge {
+      padding: 3px 9px;
+      border-radius: 5px;
+      background: rgba(0, 255, 136, 0.12);
+      color: var(--emerald);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .badge.candidate, .badge.pending_human_review, .badge.High {
+      background: var(--crimson-dim);
+      color: var(--crimson);
+      border-color: rgba(255, 0, 85, 0.4);
+      box-shadow: 0 0 8px rgba(255, 0, 85, 0.2);
+    }
+
+    .badge.confirmed {
+      background: rgba(255, 0, 85, 0.2);
+      color: #ff3377;
+      border-color: var(--crimson);
+    }
+
+    .badge.dismissed {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .badge.needs_more_evidence, .badge.Medium {
+      background: var(--amber-dim);
+      color: var(--amber);
+      border-color: rgba(255, 170, 0, 0.4);
+    }
+
+    .badge.Low, .badge.Info {
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+
+    .observation-body, .finding-body {
+      padding: 0 6px 16px;
+      color: var(--text);
+      font-family: 'Fira Code', monospace;
+      font-size: 11.5px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .observation-body strong, .finding-body strong {
+      color: var(--cyan);
+    }
+
+    .observation-body p, .finding-body p {
+      margin: 6px 0;
+      white-space: pre-wrap;
+    }
+
+    /* ── Findings & History Views ──────────────────────────────── */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0;
+    }
+
+    .chip {
+      padding: 7px 13px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(8, 14, 28, 0.7);
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip:hover {
+      border-color: var(--cyan);
+      color: var(--text-bright);
+    }
+
+    .chip.active {
+      border-color: var(--cyan);
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) auto auto auto;
+      gap: 14px;
+      align-items: center;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(8, 14, 28, 0.65);
+      text-align: left;
+      cursor: pointer;
+      color: var(--text);
+      transition: all 0.15s ease;
+    }
+
+    .row:hover, .row.selected {
+      border-color: var(--cyan);
+      background: rgba(0, 240, 255, 0.05);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.1);
+    }
+
+    .row h3 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      color: var(--text-bright);
+    }
+
+    .row p {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 11.5px;
+      overflow-wrap: anywhere;
+    }
+
+    .finding {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(8, 14, 28, 0.75);
+    }
+
+    .finding-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .finding-head h3 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 15px;
+      color: var(--text-bright);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .review-form {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr) auto;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: start;
+    }
+
+    .registry-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .registry-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: start;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(8, 14, 28, 0.65);
+    }
+
+    .registry-card h3 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      color: var(--text-bright);
+    }
+
+    .registry-card p {
+      margin: 6px 0 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .defaults {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 18px;
+      margin-top: 10px;
+    }
+
+    .defaults label { margin-top: 0; }
+    .span-2 { grid-column: 1 / -1; }
+
+    .report-layout {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 18px;
+      min-height: 640px;
+    }
+
+    .report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 720px;
+      overflow: auto;
+    }
+
+    .report-frame {
+      width: 100%;
+      height: 720px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #080d1a;
+    }
+
+    .actions { display: flex; gap: 8px; align-items: center; }
+    footer.note {
+      margin-top: 24px;
+      color: var(--text-dim);
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    /* ── Fine-Tuned Models & Attack Agents ─────────────────────── */
+    .model-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .model-card {
+      padding: 16px 18px;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      background: #0f172a;
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .model-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 14px;
+      width: 24px;
+      height: 2px;
+      background: #38bdf8;
+    }
+
+    .model-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .model-card h4 {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 750;
+      color: #f8fafc;
+    }
+
+    .model-card p {
+      margin: 4px 0 0;
+      color: #94a3b8;
+      font-size: 11.5px;
+    }
+
+    .model-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .model-fields.full { grid-template-columns: 1fr; }
+    .model-fields label { margin-top: 0; font-size: 11.5px; color: #94a3b8; }
+
+    .remove-btn {
+      flex-shrink: 0;
+      padding: 5px 12px;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      border-radius: 6px;
+      background: rgba(244, 63, 94, 0.1);
+      color: #fb7185;
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .remove-btn:hover {
+      background: #f43f5e;
+      color: #ffffff;
+    }
+
+    .add-model-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px;
+      border: 1px dashed rgba(56, 189, 248, 0.45);
+      border-radius: 8px;
+      background: rgba(2, 132, 199, 0.08);
+      color: #38bdf8;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .add-model-btn:hover {
+      background: rgba(2, 132, 199, 0.18);
+      border-color: #0284c7;
+    }
+
+    .check-status-btn {
+      margin-top: 8px;
+      padding: 7px 14px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.1);
+      color: #38bdf8;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .check-status-btn:hover:not(:disabled) {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: #0284c7;
+    }
+
+    .model-status-badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: middle;
+      border: 1px solid transparent;
+    }
+
+    .model-status-badge.online {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .model-status-badge.loading {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .model-status-badge.offline {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .model-status-badge.auth {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border-color: rgba(244, 63, 94, 0.4);
+    }
+
+    .model-status-badge.error {
+      background: rgba(148, 163, 184, 0.12);
+      color: #cbd5e1;
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+
+    /* ── HCI Assessment Mode Toggle ───────────────────────────── */
+    .mode-toggle {
+      display: flex;
+      gap: 0;
+      margin: 10px 0 0;
+      border: 1px solid #334155;
+      border-radius: 9px;
+      overflow: hidden;
+      background: #0b1120;
+    }
+
+    .mode-btn {
+      flex: 1;
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 0;
+      background: transparent;
+      color: #94a3b8;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .mode-btn:first-child {
+      border-right: 1px solid #334155;
+    }
+
+    .mode-btn:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #f1f5f9;
+    }
+
+    .mode-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: inset 0 -2px 0 #38bdf8;
+    }
+
+    .mode-btn.auth-active {
+      background: #7c3aed;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: inset 0 -2px 0 #a78bfa;
+    }
+
+    .auth-panel {
+      margin-top: 14px;
+      padding: 18px 20px;
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: 10px;
+      background: rgba(30, 20, 56, 0.45);
+      display: none;
+    }
+
+    .auth-panel.visible { display: block; }
+    
+    .auth-panel .auth-title {
+      margin: 0 0 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #c4b5fd;
+    }
+
+    .auth-panel .auth-desc {
+      margin: 0 0 14px;
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .auth-panel label {
+      margin-top: 10px;
+      color: #c4b5fd;
+    }
+
+    .auth-source-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 6px;
+    }
+
+    .source-chip {
+      padding: 7px 14px;
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: 6px;
+      background: #141029;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .source-chip:hover {
+      border-color: #8b5cf6;
+      color: #f5f3ff;
+    }
+
+    .source-chip.active {
+      border-color: #8b5cf6;
+      background: #7c3aed;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+    }
+
+    /* ── Cyber Research Section ────────────────────────────────── */
+    .research-section {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .research-section h2 {
+      margin: 0 0 4px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 19px;
+      letter-spacing: -0.01em;
+      color: var(--text-bright);
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .research-section .eyebrow-sm {
+      color: var(--cyan);
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .research-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(8, 14, 28, 0.85);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .research-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 14px;
+      right: 14px;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+
+    .research-card h4 {
+      margin: 0 0 6px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13.5px;
+      font-weight: 750;
+      color: var(--text-bright);
+    }
+
+    .research-card .score-big {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      color: var(--cyan);
+      text-shadow: 0 0 18px var(--cyan-glow);
+    }
+
+    .research-card .model-type-tag {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      font-weight: 750;
+    }
+
+    .research-card.error-card {
+      border-color: rgba(255, 0, 85, 0.4);
+      background: rgba(255, 0, 85, 0.05);
+    }
+
+    .research-card.error-card::before {
+      background: var(--crimson);
+      box-shadow: 0 0 8px var(--crimson);
+    }
+
+    .research-card.error-card h4 {
+      color: var(--crimson);
+    }
+
+    .research-summary {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(8, 14, 30, 0.85);
+    }
+
+    .research-summary h3 {
+      margin: 0 0 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13.5px;
+      font-weight: 750;
+      color: var(--cyan);
+    }
+
+    .research-summary p {
+      margin: 0;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 980px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      nav { flex-direction: row; overflow: auto; }
+      .nav-btn { width: auto; white-space: nowrap; }
+      .aside-foot { display: none; }
+      .layout, .report-layout, .review-form, .defaults, .stats { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; }
+      .report-frame { height: 480px; }
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand"><div class="brand-mark">H</div><span>HisarGPT</span></div>
-    <div class="top-note">Local assessment workspace</div>
-  </header>
-  <main>
-    <section class="hero">
-      <div>
-        <div class="eyebrow">Human-supervised evaluation</div>
-        <h1>Test your LLM application</h1>
-        <p class="subtitle">Run a bounded assessment against an explicitly authorized localhost target. Review every observation before drawing conclusions.</p>
-      </div>
-      <div class="scope-pill">● &nbsp;Localhost targets only</div>
-    </section>
-    <section class="layout">
-      <form class="panel config" id="assessment-form">
-        <h2 class="panel-title">Assessment setup</h2>
-        <p class="panel-copy">Configure a local chat endpoint and choose how responses are evaluated.</p>
-        <label for="target-url">Target chat endpoint</label>
-        <input id="target-url" name="target_url" type="url" value="http://127.0.0.1:8001/chat" required>
-        <span class="field-hint">Only localhost addresses with an explicit port are accepted.</span>
-
-        <label for="evaluator">Evaluation engine</label>
-        <select id="evaluator" name="evaluator">
-          <option value="demo">Local heuristic — no extra evaluation API calls</option>
-          <option value="ai">AI-assisted — requires OpenAI API key</option>
-        </select>
-
-        <label for="max-requests">Maximum target requests</label>
-        <input id="max-requests" name="max_requests" type="number" min="1" max="30" value="7" required>
-        <span class="field-hint">One request per assessment category; the limit is enforced by the API.</span>
-
-        <div class="consent">
-          <input id="authorization" name="authorization_confirmed" type="checkbox" required>
-          <label for="authorization">I confirm I own this target or have explicit permission to assess it.</label>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="logo" href="#assessment" id="logo-home">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <defs>
+            <linearGradient id="mark" x1="8" y1="4" x2="42" y2="46" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#6d8bff"/>
+              <stop offset="1" stop-color="#243fbe"/>
+            </linearGradient>
+          </defs>
+          <rect width="48" height="48" rx="14" fill="url(#mark)"/>
+          <path d="M24 9.5 35 14.2v8.4c0 7.2-4.6 12.2-11 14.9-6.4-2.7-11-7.7-11-14.9v-8.4L24 9.5Z" fill="none" stroke="#fff" stroke-width="1.8"/>
+          <path d="M16.5 20.5h15M18.5 16.2v4.3M24 16.2v4.3M29.5 16.2v4.3M21 28.5h6" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <strong>HisarGPT</strong>
+          <span>powered by <em>Catalic Security</em></span>
         </div>
-        <button class="run-button" id="run-button" type="submit">Run local assessment</button>
-        <p class="safe-note"><span>●</span><span>Requests are limited to your local target. Automated results are candidates, not confirmed vulnerabilities.</span></p>
-      </form>
+      </a>
+      <nav aria-label="Workspace">
+        <button class="nav-btn active" type="button" data-view="assessment">Assessment</button>
+        <button class="nav-btn" type="button" data-view="findings">Findings <span class="count" id="findings-count">0</span></button>
+        <button class="nav-btn" type="button" data-view="history">History <span class="count" id="history-count">0</span></button>
+        <button class="nav-btn" type="button" data-view="reports">Reports</button>
+        <button class="nav-btn" type="button" data-view="research">Research <span class="count" id="research-count">0</span></button>
+        <button class="nav-btn" type="button" data-view="registry">Registry</button>
+      </nav>
+      <p class="aside-foot">HisarGPT is a local assessment workspace. Automated candidates stay unconfirmed until a person reviews them.</p>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="view-kicker">CYBER OPERATIONAL DASHBOARD // HUMAN-IN-THE-LOOP</p>
+          <h1 id="view-title">Assessment</h1>
+        </div>
+        <div class="scope-pill">TARGET GATE: LOCALHOST ONLY</div>
+      </header>
 
-      <section class="panel results" id="results" aria-live="polite">
-        <div class="empty">
-          <div class="empty-inner">
-            <div class="empty-icon">⌁</div>
-            <h2>Your assessment will appear here</h2>
-            <p>Start the target API and run an assessment to see live responses, the evaluation, and a downloadable report.</p>
+      <section id="view-assessment">
+        <div class="layout">
+          <form class="panel config" id="assessment-form">
+            <div class="setup-header">
+              <div>
+                <h2 class="panel-title">Assessment Setup</h2>
+                <p class="panel-copy">Configure the target model, evaluation engine, active pentesting agents, and security constraints.</p>
+              </div>
+            </div>
+
+            <!-- Section 1: Target Model & Core Strategy -->
+            <div class="form-section">
+              <h3 class="section-title">1. Target Model & Strategy</h3>
+              <div class="form-group full">
+                <label for="target-url">Target Endpoint URL (Local model under test)</label>
+                <input id="target-url" name="target_url" type="url" value="http://127.0.0.1:8001/chat" placeholder="http://127.0.0.1:8001/chat" required>
+                <span class="field-hint">The target LLM endpoint probed by all baseline and fine-tuned pentesting agents.</span>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="evaluator">Evaluation Engine</label>
+                  <select id="evaluator" name="evaluator">
+                    <option value="demo">Local heuristic (no external API calls)</option>
+                    <option value="ai">AI-assisted (OpenAI evaluation judge)</option>
+                  </select>
+                  <span class="field-hint">Engine used to classify target boundary failures.</span>
+                </div>
+                <div class="form-group">
+                  <label for="prompt-mode">Prompt Strategy</label>
+                  <select id="prompt-mode" name="prompt_mode">
+                    <option value="hybrid">Hybrid (predefined baseline + adaptive)</option>
+                    <option value="predefined">Predefined only</option>
+                    <option value="adaptive">Adaptive only (sub-agents craft probes)</option>
+                  </select>
+                  <span class="field-hint">Reconnaissance runs first, feeding sub-agent generators.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Probing Scope & Budget -->
+            <div class="form-section">
+              <h3 class="section-title">2. Probing Scope & Request Budget</h3>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="requests-per-agent">Predefined Prompts / Agent</label>
+                  <input id="requests-per-agent" name="requests_per_agent" type="number" min="1" max="3" value="1" required>
+                  <span class="field-hint">Up to 3 curated security probes per selected agent.</span>
+                </div>
+                <div class="form-group">
+                  <label for="adaptive-per-agent">Adaptive Prompts / Agent</label>
+                  <input id="adaptive-per-agent" name="adaptive_per_agent" type="number" min="1" max="3" value="1" required>
+                  <span class="field-hint">Adversarial probes tailored to the target brief.</span>
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="max-requests">Maximum Request Budget</label>
+                  <input id="max-requests" name="max_requests" type="number" min="1" max="60" value="30" required>
+                  <span class="field-hint">Safety cap enforcing request bounds.</span>
+                </div>
+                <div class="form-group" style="display:flex;flex-direction:column;justify-content:center">
+                  <label style="margin-bottom:4px">Budget Status</label>
+                  <p class="budget-summary" id="budget-summary" aria-live="polite" style="margin:0"></p>
+                </div>
+              </div>
+              <div class="form-group full" style="margin-top:12px">
+                <fieldset class="agent-picker">
+                  <legend>Security categories to probe</legend>
+                  <div class="agent-list" id="agent-list"></div>
+                </fieldset>
+              </div>
+            </div>
+
+            <!-- Section 3: Fine-Tuned Pentesting Attack Agents -->
+            <div class="form-section">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+                <h3 class="section-title" style="margin:0">3. Fine-Tuned Pentesting Attack Agents <span class="field-hint" style="display:inline">(optional)</span></h3>
+              </div>
+              <p class="panel-copy" style="margin:6px 0 12px;font-size:12px">Deploy specialized offensive LLMs from Hugging Face or self-trained models to attack your target model.</p>
+              
+              <div class="presets-row">
+                <button class="preset-btn" type="button" id="btn-add-zephyr" title="Add WhiteRabbitNeo-2.5">
+                  ⚡ Add WhiteRabbitNeo-2.5 (Pentest LLM)
+                </button>
+                <button class="preset-btn" type="button" id="btn-add-phi3" title="Add RedTeam-GPT">
+                  ⚡ Add RedTeam-GPT (Red Teaming LLM)
+                </button>
+                <button class="preset-btn primary" type="button" id="btn-add-both-presets">
+                  ✨ Load Both Attack Engines
+                </button>
+              </div>
+
+              <div class="model-list" id="fine-tuned-model-list"></div>
+              <button class="add-model-btn" type="button" id="add-model-btn">+ Add Custom / Self-Trained Pentesting Agent</button>
+            </div>
+
+            <!-- Section 4: Assessment Mode (Blind vs Informed) -->
+            <div class="form-section">
+              <h3 class="section-title">4. Assessment Knowledge Mode</h3>
+              <div class="mode-toggle" role="group" aria-label="Assessment mode">
+                <button class="mode-btn active" type="button" id="btn-mode-unauth">
+                  🔍 Unauthenticated (Blind Testing)
+                </button>
+                <button class="mode-btn" type="button" id="btn-mode-auth">
+                  🔐 Authenticated (Informed Context)
+                </button>
+              </div>
+              <span class="field-hint" id="mode-hint" style="margin-top:8px;display:block">
+                <strong>Blind testing</strong> — sub-agents receive no prior information about the target system.
+              </span>
+
+              <!-- Authenticated Context Panel -->
+              <div class="auth-panel" id="auth-panel" aria-hidden="true">
+                <p class="auth-title">🔐 Prior Build Information & Context</p>
+                <p class="auth-desc">
+                  Supply prior knowledge of the target system. Sub-agents use this context to craft focused tests,
+                  verifying whether the target stays within declared limits and protects its instructions.
+                </p>
+
+                <div class="form-group full">
+                  <label>Prior Information Source</label>
+                  <div class="auth-source-row" id="source-chips">
+                    <button class="source-chip active" type="button" data-source="both">User + System (/system-info)</button>
+                    <button class="source-chip" type="button" data-source="user">User-supplied only</button>
+                    <button class="source-chip" type="button" data-source="system">System disclosure only</button>
+                  </div>
+                  <input type="hidden" id="prior-source-value" value="both">
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="prior-role">Target Role / Persona</label>
+                    <input id="prior-role" type="text" placeholder="e.g. Banking assistant, HR helper" maxlength="200">
+                  </div>
+                  <div class="form-group">
+                    <label for="prior-architecture">Architecture / Stack</label>
+                    <input id="prior-architecture" type="text" placeholder="e.g. RAG with Pinecone, tool-calling GPT-4" maxlength="500">
+                  </div>
+                </div>
+
+                <div class="form-group full">
+                  <label for="prior-system-prompt">Known System Instructions</label>
+                  <textarea id="prior-system-prompt" placeholder="Paste known instructions. Sub-agents will test if the target leaks them verbatim." maxlength="2000" style="min-height:80px"></textarea>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="prior-tools">Declared Tools (one per line)</label>
+                    <textarea id="prior-tools" placeholder="e.g.&#10;check_balance&#10;transfer_funds" maxlength="1200" style="min-height:65px"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="prior-constraints">Known Restrictions (one per line)</label>
+                    <textarea id="prior-constraints" placeholder="e.g.&#10;Never reveal system prompt&#10;No PII disclosure" maxlength="1200" style="min-height:65px"></textarea>
+                  </div>
+                </div>
+
+                <div class="form-group full">
+                  <label for="prior-notes">Operator Notes & Boundary Rules</label>
+                  <textarea id="prior-notes" placeholder="Additional notes: compliance boundaries, test scope, known weaknesses…" maxlength="1000" style="min-height:55px"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 5: Authorization & Execution -->
+            <div class="form-section execution-section">
+              <div class="consent">
+                <input id="authorization" name="authorization_confirmed" type="checkbox" required>
+                <label for="authorization">I confirm I own this target or have explicit authorization to assess it.</label>
+              </div>
+              <button class="run-button" id="run-button" type="submit">⚡ Launch Security Assessment</button>
+              <p class="safe-note"><span>●</span><span>Probes execute against your local target only. Results are saved locally in History and PDF Reports.</span></p>
+            </div>
+          </form>
+          <section class="panel results" id="results" aria-live="polite">
+            <div class="empty">
+              <div class="empty-inner">
+                <div class="empty-icon">⌁</div>
+                <h2>Your assessment will appear here</h2>
+                <p>Start the target API and run an assessment. The score, observations, and PDF report are kept in this workspace.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="view-findings" hidden>
+        <div class="panel page">
+          <div class="toolbar">
+            <div>
+              <h2>Candidate findings</h2>
+              <p class="result-meta">Each candidate comes from a saved assessment. Confirming one records your review; it does not change the original score.</p>
+            </div>
+          </div>
+          <div class="filters" id="finding-filters">
+            <button class="chip active" type="button" data-filter="candidates">Candidates</button>
+            <button class="chip" type="button" data-filter="pending_human_review">Pending</button>
+            <button class="chip" type="button" data-filter="confirmed">Confirmed</button>
+            <button class="chip" type="button" data-filter="needs_more_evidence">Needs evidence</button>
+            <button class="chip" type="button" data-filter="dismissed">Dismissed</button>
+            <button class="chip" type="button" data-filter="all">All observations</button>
+          </div>
+          <div id="findings-body"></div>
+        </div>
+      </section>
+
+      <section id="view-history" hidden>
+        <div class="panel page">
+          <div class="toolbar">
+            <div>
+              <h2>Assessment history</h2>
+              <p class="result-meta">Runs stored on this machine. Open one to review its observations or jump to the PDF.</p>
+            </div>
+          </div>
+          <div id="history-body"></div>
+        </div>
+      </section>
+
+      <section id="view-reports" hidden>
+        <div class="panel page">
+          <div class="toolbar">
+            <div>
+              <h2>Reports</h2>
+              <p class="result-meta">PDF export for each saved assessment. HisarGPT, powered by Catalic Security.</p>
+            </div>
+          </div>
+          <div id="reports-body"></div>
+        </div>
+      </section>
+
+      <section id="view-research" hidden>
+        <div class="panel page">
+          <div class="toolbar">
+            <div>
+              <h2>Research</h2>
+              <p class="result-meta">Combined analysis across all tested models — UN target system and fine-tuned models.</p>
+            </div>
+          </div>
+          <div id="research-body">
+            <div class="empty">
+              <div class="empty-inner">
+                <div class="empty-icon">⊕</div>
+                <h2>No research data yet</h2>
+                <p>Run an assessment with at least one fine-tuned model configured. The Research section shows comparative results across all models.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-    </section>
-    <footer>HisarGPT is a local MVP. Findings require independent human verification.</footer>
-  </main>
+
+      <section id="view-registry" hidden>
+        <form class="panel page" id="registry-form">
+          <div class="toolbar">
+            <div>
+              <h2>Agentic registry</h2>
+              <p class="result-meta">Enable the specialist agents for new assessments and set the workspace defaults.</p>
+            </div>
+            <button class="run-button" style="width:auto;margin:0;padding:0 16px" type="submit">Save registry</button>
+          </div>
+          <div id="registry-message"></div>
+          <div class="registry-grid" id="registry-agents"></div>
+          <h2 class="panel-title" style="margin-top:22px">Workspace defaults</h2>
+          <p class="panel-copy">These values prefill Assessment. A run still requires authorization on that form.</p>
+          <div class="defaults">
+            <div class="span-2">
+              <label for="registry-target">Default target endpoint</label>
+              <input id="registry-target" type="url" required>
+            </div>
+            <div>
+              <label for="registry-evaluator">Evaluation engine</label>
+              <select id="registry-evaluator">
+                <option value="demo">Local heuristic</option>
+                <option value="ai">AI-assisted</option>
+              </select>
+            </div>
+            <div>
+              <label for="registry-mode">Prompt strategy</label>
+              <select id="registry-mode">
+                <option value="hybrid">Hybrid</option>
+                <option value="predefined">Predefined only</option>
+                <option value="adaptive">Adaptive only</option>
+              </select>
+            </div>
+            <div>
+              <label for="registry-predefined">Predefined prompts per agent</label>
+              <input id="registry-predefined" type="number" min="1" max="3" required>
+            </div>
+            <div>
+              <label for="registry-adaptive">Adaptive prompts per agent</label>
+              <input id="registry-adaptive" type="number" min="1" max="3" required>
+            </div>
+            <div>
+              <label for="registry-budget">Maximum target requests</label>
+              <input id="registry-budget" type="number" min="1" max="30" required>
+            </div>
+          </div>
+        </form>
+      </section>
+      <footer class="note">HisarGPT · powered by Catalic Security. Findings require independent human verification.</footer>
+    </div>
+  </div>
   <script>
+    const VIEWS = {
+      assessment: ["CYBER OPERATIONAL DASHBOARD // HUMAN-IN-THE-LOOP", "Assessment"],
+      findings: ["THREAT INTEL & VULNERABILITY TRIAGE", "Candidate Findings"],
+      history: ["AUDIT LOGS & RUN ARCHIVE", "Assessment History"],
+      reports: ["EXECUTIVE SECURITY INTELLIGENCE // PDF", "Reports"],
+      research: ["MULTI-AGENT ADVERSARIAL SYNTHESIS", "Comparative Research"],
+      registry: ["ACTIVE AGENT ROSTER // DEFENSE MATRIX", "Agentic Registry"]
+    };
+    const REVIEW_LABELS = {
+      pending_human_review: "Pending review",
+      confirmed: "Confirmed",
+      dismissed: "Dismissed",
+      needs_more_evidence: "Needs evidence"
+    };
+
     const form = document.getElementById("assessment-form");
     const results = document.getElementById("results");
     const button = document.getElementById("run-button");
+    const budgetSummary = document.getElementById("budget-summary");
+    const agentList = document.getElementById("agent-list");
+    let formDirty = false;
+    let findingFilter = "candidates";
+    let findingsCache = [];
+    let historyCache = [];
+    let selectedReport = null;
+    let researchCache = null;
+    let fineTunedModelCount = 0;
+    let currentMode = "unauthenticated";
+
+    // ── Mode toggle logic ────────────────────────────────────────
+    function setMode(mode) {
+      currentMode = mode;
+      const unBtn = document.getElementById("btn-mode-unauth");
+      const authBtn = document.getElementById("btn-mode-auth");
+      const authPanel = document.getElementById("auth-panel");
+      const modeHint = document.getElementById("mode-hint");
+      if (mode === "authenticated") {
+        unBtn.classList.remove("active");
+        authBtn.classList.add("active", "auth-active");
+        authPanel.classList.add("visible");
+        authPanel.setAttribute("aria-hidden", "false");
+        modeHint.innerHTML = "<strong>Informed testing</strong> — sub-agents receive your prior knowledge and craft targeted, context-aware attacks.";
+      } else {
+        authBtn.classList.remove("active", "auth-active");
+        unBtn.classList.add("active");
+        authPanel.classList.remove("visible");
+        authPanel.setAttribute("aria-hidden", "true");
+        modeHint.innerHTML = "<strong>Blind testing</strong> — sub-agents receive no prior knowledge of the target system.";
+      }
+      formDirty = true;
+    }
+
+    function collectPriorInformation() {
+      const lines = text => (text || "").split("\n").map(l => l.trim()).filter(Boolean);
+      return {
+        role: (document.getElementById("prior-role")?.value || "").trim(),
+        system_prompt: (document.getElementById("prior-system-prompt")?.value || "").trim(),
+        architecture: (document.getElementById("prior-architecture")?.value || "").trim(),
+        tools: lines(document.getElementById("prior-tools")?.value),
+        constraints: lines(document.getElementById("prior-constraints")?.value),
+        notes: (document.getElementById("prior-notes")?.value || "").trim(),
+        documents: []
+      };
+    }
 
     function element(tag, className, text) {
       const node = document.createElement(tag);
@@ -187,8 +1956,130 @@
       return node;
     }
 
+    function planFor(agent, mode, perAgent, adaptive) {
+      if (agent === "Reconnaissance Agent") return mode === "adaptive" ? 1 : perAgent;
+      return (mode !== "adaptive" ? perAgent : 0) + (mode !== "predefined" ? adaptive : 0);
+    }
+
+    function agentInputs() {
+      return [...form.querySelectorAll('input[name="selected_agents"]')];
+    }
+
+    function updateBudgetSummary() {
+      const inputs = agentInputs();
+      const selectedCount = inputs.filter(input => input.checked).length;
+      const perAgent = Number(document.getElementById("requests-per-agent").value);
+      const adaptive = Number(document.getElementById("adaptive-per-agent").value);
+      const mode = document.getElementById("prompt-mode").value;
+      const budget = Number(document.getElementById("max-requests").value);
+      document.getElementById("requests-per-agent").disabled = mode === "adaptive";
+      document.getElementById("adaptive-per-agent").disabled = mode === "predefined";
+      const total = inputs.filter(input => input.checked)
+        .reduce((sum, input) => sum + planFor(input.value, mode, perAgent, adaptive), 0);
+      const valid = selectedCount > 0 && total <= budget;
+      budgetSummary.textContent = selectedCount
+        ? `Estimated target requests: ${total} of ${budget}${valid ? "" : " — select an agent or increase the budget"}.`
+        : "Select at least one agent.";
+      budgetSummary.classList.toggle("invalid", !valid);
+      return valid;
+    }
+
     function showError(message) {
       results.replaceChildren(element("div", "error", message));
+    }
+
+    function renderObservations(parent, observations) {
+      const wrap = element("div", "observations");
+      wrap.append(element("h3", "", "Test observations"));
+      observations.forEach(item => {
+        const details = element("details", "observation");
+        const summaryLine = element("summary");
+        summaryLine.append(element("span", "", `${item.test_name}${item.prompt_source === "predefined" ? "" : " · " + item.prompt_source}`));
+        summaryLine.append(element("span", `badge${item.candidate ? " candidate" : ""}`, item.candidate ? "Candidate" : "No candidate"));
+        details.append(summaryLine);
+        const body = element("div", "observation-body");
+        body.append(element("p", "", `Prompt (${item.prompt_source || "predefined"}): ${item.prompt}`));
+        if (item.reasoning) body.append(element("p", "", `Sub-agent reasoning: ${item.reasoning}`));
+        if (item.expected_safe_behavior) body.append(element("p", "", `Expected safe behavior: ${item.expected_safe_behavior}`));
+        body.append(element("p", "", `Target response: ${item.response}`));
+        body.append(element("p", "", `Assessment: ${item.assessment || ""}`));
+        body.append(element("p", "", `Rationale: ${item.rationale || ""}`));
+        details.append(body);
+        wrap.append(details);
+      });
+      parent.append(wrap);
+    }
+
+    function renderResearchSection(research, container) {
+      if (!research) return;
+      const section = element("div", "research-section");
+      section.append(element("p", "eyebrow-sm", "Research: Multi-Agent Pentesting"));
+      section.append(element("h2", "", "Pentesting Agents Comparative Analysis"));
+      const targetLabel = research.target_url || "Target Model";
+      const pentesters = research.pentester_results || research.model_results || [];
+      const meta = element("p", "result-meta", `Target: ${targetLabel} · ${pentesters.length} pentesting agents deployed · Resilience: ${research.target_resilience_rating || "Evaluated"}`);
+      section.append(meta);
+
+      const grid = element("div", "research-grid");
+      pentesters.forEach(pr => {
+        const card = element("div", pr.error ? "research-card error-card" : "research-card");
+        const title = pr.pentester_label || pr.model_label || pr.pentester_id || "Pentester";
+        card.append(element("h4", "", title));
+        if (pr.error) {
+          card.append(element("p", "", `Error: ${pr.error}`));
+        } else {
+          const score = pr.target_score !== undefined ? pr.target_score : (pr.score !== undefined ? pr.score : 0);
+          const grade = pr.target_grade || pr.grade || "";
+          const vulns = pr.vulnerabilities_found !== undefined ? pr.vulnerabilities_found : (pr.candidate_count || 0);
+          const scoreEl = element("div", "score-big", `${score}/100`);
+          card.append(scoreEl);
+          card.append(element("p", "", `Target Score: ${grade} · ${vulns} vuln(s) exposed`));
+        }
+        const typeTag = pr.pentester_type || pr.model_type || "pentester";
+        card.append(element("span", "model-type-tag", typeTag === "openai_baseline" ? "OpenAI Baseline" : typeTag));
+        grid.append(card);
+      });
+      section.append(grid);
+
+      const summaryBox = element("div", "research-summary");
+      summaryBox.append(element("h3", "", "Comparative Pentesting Synthesis"));
+      summaryBox.append(element("p", "", research.comparative_summary));
+      section.append(summaryBox);
+
+      container.append(section);
+    }
+
+    async function loadResearch() {
+      const body = document.getElementById("research-body");
+      if (!researchCache) {
+        try {
+          const history = await fetch("/assessments").then(readJson);
+          const all = await Promise.all(
+            (history.assessments || []).slice(0, 5).map(item =>
+              fetch(`/assessments/${encodeURIComponent(item.assessment_id)}`).then(readJson).catch(() => null)
+            )
+          );
+          researchCache = all.find(a => a && a.research_section) || null;
+        } catch (e) {
+          body.replaceChildren(element("div", "error", e.message));
+          return;
+        }
+      }
+      if (!researchCache || !researchCache.research_section) {
+        body.replaceChildren();
+        const empty = element("div", "empty");
+        const inner = element("div", "empty-inner");
+        inner.append(element("div", "empty-icon", "⊕"));
+        inner.append(element("h2", "", "No research data yet"));
+        inner.append(element("p", "", "Run an assessment with at least one fine-tuned model configured."));
+        empty.append(inner);
+        body.append(empty);
+        return;
+      }
+      body.replaceChildren();
+      const wrapper = element("div");
+      renderResearchSection(researchCache.research_section, wrapper);
+      body.append(wrapper);
     }
 
     function renderResult(data) {
@@ -198,10 +2089,15 @@
       heading.append(element("h2", "", "Assessment complete"));
       heading.append(element("p", "result-meta", `${data.assessment_id} · ${data.target_url}`));
       header.append(heading);
-      const download = element("a", "download", "↓  PDF report");
+      const links = element("div", "actions");
+      const findingsLink = element("button", "text-btn", "Open findings");
+      findingsLink.type = "button";
+      findingsLink.addEventListener("click", () => showView("findings"));
+      const download = element("a", "download", "PDF report");
       download.href = `/reports/${encodeURIComponent(data.assessment_id)}`;
       download.setAttribute("download", `HisarGPT-${data.assessment_id}.pdf`);
-      header.append(download);
+      links.append(findingsLink, download);
+      header.append(links);
       fragment.append(header);
 
       const candidateCount = data.observations.filter(item => item.candidate).length;
@@ -209,6 +2105,7 @@
       [
         ["Score", data.score, " / 100"],
         ["Grade", data.grade, ""],
+        ["Candidates", candidateCount, ""],
         ["Requests", data.total_requests, " used"]
       ].forEach(([label, value, suffix]) => {
         const stat = element("div", "stat");
@@ -222,34 +2119,585 @@
       fragment.append(stats);
 
       const summary = element("div", "summary");
-      summary.append(element("h3", "", `${data.evaluator === "demo" ? "Local heuristic" : "AI"} evaluator summary · ${candidateCount} candidate(s)`));
+      summary.append(element("h3", "", `${data.evaluator === "demo" ? "Local heuristic" : "AI"} evaluator summary`));
       summary.append(element("p", "", data.judge_summary));
       fragment.append(summary);
-      fragment.append(element("p", "review", "⚠ Pending human review — automated candidates are not confirmed findings."));
-
-      const observations = element("div", "observations");
-      observations.append(element("h3", "", "Test observations"));
-      data.observations.forEach(item => {
-        const details = element("details", "observation");
-        const summaryLine = element("summary");
-        summaryLine.append(element("span", "", item.test_name));
-        summaryLine.append(element("span", `badge${item.candidate ? " candidate" : ""}`, item.candidate ? "Candidate" : "No candidate"));
-        details.append(summaryLine);
-        const body = element("div", "observation-body");
-        body.append(element("p", "", `Prompt: ${item.prompt}`));
-        body.append(element("p", "", `Target response: ${item.response}`));
-        body.append(element("p", "", `Assessment: ${item.assessment}`));
-        body.append(element("p", "", `Rationale: ${item.rationale}`));
-        details.append(body);
-        observations.append(details);
-      });
-      fragment.append(observations);
+      fragment.append(element("p", "review", "Pending human review — automated candidates are not confirmed findings."));
+      if (data.target_brief) {
+        const brief = element("div", "summary");
+        const mode = data.target_brief.knowledge_mode || data.mode || "unauthenticated";
+        const modeTag = mode === "authenticated" ? "🔐 Authenticated" : "🔍 Unauthenticated";
+        brief.append(element("h3", "", `Main agent brief · ${data.prompt_mode} prompts · ${modeTag}`));
+        brief.append(element("p", "", `Domain: ${data.target_brief.domain}. ${data.target_brief.summary}`));
+        if (mode === "authenticated") {
+          if (data.target_brief.known_role) brief.append(element("p", "", `Known role: ${data.target_brief.known_role}`));
+          if (data.target_brief.known_system_prompt) brief.append(element("p", "", `Known instructions: on file (${data.target_brief.known_system_prompt.length} chars)`));
+          if (data.target_brief.known_tools && data.target_brief.known_tools.length)
+            brief.append(element("p", "", `Declared tools: ${data.target_brief.known_tools.join(", ")}`));
+          if (data.target_brief.known_constraints && data.target_brief.known_constraints.length)
+            brief.append(element("p", "", `Known constraints: ${data.target_brief.known_constraints.join("; ")}`));
+          if (data.target_brief.prior_source)
+            brief.append(element("p", "", `Prior source: ${data.target_brief.prior_source}`));
+        }
+        fragment.append(brief);
+      }
+      renderObservations(fragment, data.observations);
+      if (data.research_section) {
+        researchCache = data;
+        renderResearchSection(data.research_section, fragment);
+        document.getElementById("research-count").textContent = String(data.research_section.total_models_tested || 0);
+      }
       results.replaceChildren(fragment);
     }
+
+    const HF_PRESETS = [
+      {
+        model_id: "WhiteRabbitNeo/WhiteRabbitNeo-2.5-Qwen-2.5-Coder-7B",
+        model_type: "huggingface_api",
+        label: "WhiteRabbitNeo-2.5 (Cybersecurity Pentest LLM)",
+        base_url: "",
+        api_token: ""
+      },
+      {
+        model_id: "darkknight25/REDTEAM_GPT",
+        model_type: "huggingface_api",
+        label: "RedTeam-GPT (Red Teaming LLM)",
+        base_url: "",
+        api_token: ""
+      }
+    ];
+
+    function isModelAlreadyAdded(modelId) {
+      const existing = collectFineTunedModels();
+      return existing.some(m => m.model_id.toLowerCase() === modelId.toLowerCase());
+    }
+
+    function addFineTunedModel(initialData) {
+      if (initialData && isModelAlreadyAdded(initialData.model_id)) {
+        return;
+      }
+      fineTunedModelCount++;
+      const idx = fineTunedModelCount;
+      const list = document.getElementById("fine-tuned-model-list");
+      const card = element("div", "model-card");
+      card.dataset.modelIdx = idx;
+
+      const head = element("div", "model-card-head");
+      const title = element("h4", "", (initialData && (initialData.label || initialData.model_id)) ? (initialData.label || initialData.model_id) : `Model ${idx}`);
+      const removeBtn = element("button", "remove-btn", "Remove");
+      removeBtn.type = "button";
+      removeBtn.addEventListener("click", () => card.remove());
+      head.append(title, removeBtn);
+      card.append(head);
+
+      const fields = element("div", "model-fields");
+
+      const idLabel = element("label", "", "Model ID or name");
+      const idInput = element("input");
+      idInput.type = "text";
+      idInput.name = `ft_model_id_${idx}`;
+      idInput.placeholder = "e.g. microsoft/phi-2 or my-local-model";
+      idInput.required = false;
+      if (initialData && initialData.model_id) idInput.value = initialData.model_id;
+      idLabel.append(idInput);
+
+      const typeLabel = element("label", "", "Model type");
+      const typeSelect = element("select");
+      typeSelect.name = `ft_model_type_${idx}`;
+      [
+        ["huggingface_api", "HuggingFace / Open-source (API)"],
+        ["local", "Self-trained local model (HTTP)"]
+      ].forEach(([value, text]) => {
+        const opt = element("option", "", text);
+        opt.value = value;
+        if (initialData && initialData.model_type === value) opt.selected = true;
+        typeSelect.append(opt);
+      });
+      typeLabel.append(typeSelect);
+
+      fields.append(idLabel, typeLabel);
+      card.append(fields);
+
+      const extraFields = element("div", "model-fields");
+
+      const urlLabel = element("label", "", "Endpoint URL (leave blank for Hugging Face)");
+      const urlInput = element("input");
+      urlInput.type = "text";
+      urlInput.name = `ft_base_url_${idx}`;
+      urlInput.placeholder = "Leave empty for HF, or http://127.0.0.1:8002/chat for self-trained";
+      if (initialData && initialData.base_url) urlInput.value = initialData.base_url;
+      urlLabel.append(urlInput);
+
+      const tokenLabel = element("label", "", "HF API Token (optional, not required)");
+      const tokenInput = element("input");
+      tokenInput.type = "password";
+      tokenInput.name = `ft_api_token_${idx}`;
+      tokenInput.placeholder = "Optional: hf_... (runs offline if empty)";
+      if (initialData && initialData.api_token) tokenInput.value = initialData.api_token;
+      tokenLabel.append(tokenInput);
+
+      const labelLabel = element("label", "", "Display label (optional)");
+      const labelInput = element("input");
+      labelInput.type = "text";
+      labelInput.name = `ft_label_${idx}`;
+      labelInput.placeholder = "e.g. Phi-2 Fine-tuned";
+      if (initialData && initialData.label) labelInput.value = initialData.label;
+      labelLabel.append(labelInput);
+
+      extraFields.append(urlLabel, tokenLabel);
+      card.append(extraFields);
+
+      const labelRow = element("div", "model-fields full");
+      labelRow.append(labelLabel);
+      card.append(labelRow);
+
+      // Check Status button
+      const statusRow = element("div", "model-fields full");
+      const checkBtn = element("button", "check-status-btn", "🔎 Check model availability");
+      checkBtn.type = "button";
+      const statusBadge = element("span", "model-status-badge", "");
+      statusBadge.style.display = "none";
+      checkBtn.addEventListener("click", async () => {
+        const mId = idInput.value.trim();
+        const mType = typeSelect.value;
+        const mUrl = urlInput.value.trim();
+        const mToken = tokenInput.value.trim();
+        if (!mId) {
+          statusBadge.textContent = "Enter a model ID first";
+          statusBadge.className = "model-status-badge error";
+          statusBadge.style.display = "";
+          return;
+        }
+        checkBtn.disabled = true;
+        checkBtn.textContent = "Checking…";
+        statusBadge.style.display = "none";
+        try {
+          const res = await fetch("/models/fine-tuned/check-status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ model_id: mId, model_type: mType, base_url: mUrl, api_token: mToken })
+          });
+          const data = await res.json().catch(() => ({}));
+          const st = data.status || "error";
+          const labels = {
+            online: "🟢 Online", loading: "🟡 Loading (retry later)",
+            auth_required: "🔑 Auth required", not_hosted: "🟣 Not hosted (built-in engine)",
+            offline_ready: "🔵 Offline ready (curated)", offline: "🔵 Offline (curated)", error: "⚠️ Unavailable"
+          };
+          const cls = {
+            online: "online", loading: "loading", auth_required: "auth",
+            not_hosted: "offline", offline_ready: "offline", offline: "offline", error: "error"
+          };
+          statusBadge.textContent = labels[st] || st;
+          statusBadge.className = "model-status-badge " + (cls[st] || "error");
+          statusBadge.style.display = "";
+        } catch (e) {
+          statusBadge.textContent = "⚠️ Check failed";
+          statusBadge.className = "model-status-badge error";
+          statusBadge.style.display = "";
+        } finally {
+          checkBtn.disabled = false;
+          checkBtn.textContent = "🔎 Check model availability";
+        }
+      });
+      const statusHint = element("div");
+      statusHint.append(checkBtn, statusBadge);
+      statusRow.append(statusHint);
+      card.append(statusRow);
+
+      list.append(card);
+      title.textContent = labelInput.value || idInput.value || `Model ${idx}`;
+      idInput.addEventListener("input", () => {
+        title.textContent = labelInput.value || idInput.value || `Model ${idx}`;
+      });
+      labelInput.addEventListener("input", () => {
+        title.textContent = labelInput.value || idInput.value || `Model ${idx}`;
+      });
+    }
+
+    function collectFineTunedModels() {
+      const cards = document.querySelectorAll("#fine-tuned-model-list .model-card");
+      const models = [];
+      cards.forEach(card => {
+        const idx = card.dataset.modelIdx;
+        const model_id = card.querySelector(`[name="ft_model_id_${idx}"]`)?.value?.trim() || "";
+        const model_type = card.querySelector(`[name="ft_model_type_${idx}"]`)?.value || "huggingface_api";
+        const base_url = card.querySelector(`[name="ft_base_url_${idx}"]`)?.value?.trim() || "";
+        const api_token = card.querySelector(`[name="ft_api_token_${idx}"]`)?.value?.trim() || "";
+        const label = card.querySelector(`[name="ft_label_${idx}"]`)?.value?.trim() || "";
+        if (model_id) {
+          models.push({
+            agent_id: model_id,
+            model_id: model_id,
+            agent_type: model_type,
+            model_type: model_type,
+            base_url,
+            api_token,
+            label
+          });
+        }
+      });
+      return models;
+    }
+
+    function applyRegistry(registry, force) {
+      if (formDirty && !force) return;
+      const defaults = registry.defaults;
+      document.getElementById("target-url").value = defaults.target_url;
+      document.getElementById("evaluator").value = defaults.evaluator;
+      document.getElementById("prompt-mode").value = defaults.prompt_mode;
+      document.getElementById("requests-per-agent").value = defaults.requests_per_agent;
+      document.getElementById("adaptive-per-agent").value = defaults.adaptive_per_agent;
+      document.getElementById("max-requests").value = defaults.max_requests;
+      agentList.replaceChildren();
+      registry.agents.forEach(agent => {
+        const label = element("label", "agent-option");
+        const input = element("input");
+        input.type = "checkbox";
+        input.name = "selected_agents";
+        input.value = agent.name;
+        input.checked = agent.enabled;
+        input.addEventListener("change", () => { formDirty = true; updateBudgetSummary(); });
+        label.append(input, document.createTextNode(agent.short));
+        agentList.append(label);
+      });
+      updateBudgetSummary();
+    }
+
+    async function loadRegistry(force) {
+      const registry = await fetch("/registry").then(readJson);
+      applyRegistry(registry, force);
+      return registry;
+    }
+
+    async function readJson(response) {
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const detail = typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || data);
+        throw new Error(detail || `Request failed (${response.status})`);
+      }
+      return data;
+    }
+
+    function showView(name) {
+      const view = VIEWS[name] ? name : "assessment";
+      location.hash = view;
+      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.view === view));
+      Object.keys(VIEWS).forEach(key => {
+        document.getElementById(`view-${key}`).hidden = key !== view;
+      });
+      document.getElementById("view-kicker").textContent = VIEWS[view][0];
+      document.getElementById("view-title").textContent = VIEWS[view][1];
+      if (view === "findings") loadFindings();
+      if (view === "history") loadHistory();
+      if (view === "reports") loadReports();
+      if (view === "registry") renderRegistry();
+      if (view === "research") loadResearch();
+    }
+
+    async function refreshCounts() {
+      try {
+        const [findings, history] = await Promise.all([
+          fetch("/findings").then(readJson),
+          fetch("/assessments").then(readJson)
+        ]);
+        findingsCache = findings.findings;
+        historyCache = history.assessments;
+        document.getElementById("findings-count").textContent = String(findings.candidate_count);
+        document.getElementById("history-count").textContent = String(history.assessments.length);
+      } catch (error) {
+        document.getElementById("findings-count").textContent = "!";
+        document.getElementById("history-count").textContent = "!";
+      }
+    }
+
+    function filteredFindings() {
+      return findingsCache.filter(item => {
+        if (findingFilter === "all") return true;
+        if (findingFilter === "candidates") return item.candidate;
+        return item.candidate && item.review_status === findingFilter;
+      });
+    }
+
+    function renderFindings() {
+      const body = document.getElementById("findings-body");
+      const items = filteredFindings();
+      if (!items.length) {
+        body.replaceChildren(element("div", "empty", ""), );
+        body.firstChild.append(element("div", "empty-inner"));
+        const inner = body.querySelector(".empty-inner");
+        inner.append(element("h2", "", "No findings in this view"));
+        inner.append(element("p", "", "Run an assessment. Candidates appear here for human review."));
+        return;
+      }
+      const list = element("div", "list");
+      items.forEach(item => {
+        const card = element("article", "finding");
+        const head = element("div", "finding-head");
+        const title = element("div");
+        title.append(element("h3", "", item.test_name));
+        const tags = element("div", "tags");
+        tags.append(element("span", "badge", item.agent_short || item.agent));
+        tags.append(element("span", `badge ${item.triage}`, item.triage));
+        tags.append(element("span", `badge ${item.review_status}`, REVIEW_LABELS[item.review_status] || item.review_status));
+        title.append(tags);
+        head.append(title);
+        const open = element("button", "text-btn", "History");
+        open.type = "button";
+        open.addEventListener("click", () => showView("history"));
+        head.append(open);
+        card.append(head);
+        const copy = element("div", "finding-body");
+        copy.append(element("p", "", `${item.target_url} · ${item.created_at || ""}`));
+        copy.append(element("p", "", `Prompt: ${item.prompt}`));
+        copy.append(element("p", "", `Target response: ${item.response}`));
+        copy.append(element("p", "", `Assessment: ${item.assessment || ""}`));
+        card.append(copy);
+        if (item.candidate) {
+          const review = element("form", "review-form");
+          const status = element("select");
+          Object.entries(REVIEW_LABELS).forEach(([value, label]) => {
+            const option = element("option", "", label);
+            option.value = value;
+            option.selected = value === item.review_status;
+            status.append(option);
+          });
+          const note = element("textarea");
+          note.placeholder = "Review note";
+          note.value = item.review_note || "";
+          const save = element("button", "ghost", "Save review");
+          save.type = "submit";
+          review.append(status, note, save);
+          review.addEventListener("submit", async event => {
+            event.preventDefault();
+            save.disabled = true;
+            try {
+              await fetch(`/findings/${encodeURIComponent(item.finding_id)}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: status.value, note: note.value })
+              }).then(readJson);
+              await refreshCounts();
+              renderFindings();
+            } catch (error) {
+              save.disabled = false;
+              note.placeholder = error.message;
+            }
+          });
+          card.append(review);
+        }
+        list.append(card);
+      });
+      body.replaceChildren(list);
+    }
+
+    async function loadFindings() {
+      const body = document.getElementById("findings-body");
+      body.replaceChildren(element("div", "loading", "Loading findings…"));
+      try {
+        await refreshCounts();
+        renderFindings();
+      } catch (error) {
+        body.replaceChildren(element("div", "error", error.message));
+      }
+    }
+
+    function renderHistoryDetail(record) {
+      const panel = element("div", "summary");
+      panel.append(element("h3", "", `${record.grade} · ${record.score}/100`));
+      panel.append(element("p", "", record.judge_summary));
+      const wrap = element("div");
+      wrap.append(panel);
+      renderObservations(wrap, record.observations || []);
+      return wrap;
+    }
+
+    async function loadHistory() {
+      const body = document.getElementById("history-body");
+      body.replaceChildren(element("div", "loading", "Loading history…"));
+      try {
+        await refreshCounts();
+        if (!historyCache.length) {
+          const empty = element("div", "empty");
+          const inner = element("div", "empty-inner");
+          inner.append(element("h2", "", "No assessments yet"));
+          inner.append(element("p", "", "Completed runs are listed here with their score, grade, and report."));
+          empty.append(inner);
+          body.replaceChildren(empty);
+          return;
+        }
+        const list = element("div", "list");
+        historyCache.forEach(item => {
+          const row = element("button", "row");
+          row.type = "button";
+          const title = element("div");
+          title.append(element("h3", "", item.grade || "Assessment"));
+          title.append(element("p", "", `${item.created_at || ""} · ${item.target_url}`));
+          row.append(title);
+          row.append(element("span", "badge", `${item.score}/100`));
+          row.append(element("span", "badge candidate", `${item.candidate_count} candidates`));
+          row.append(element("span", "badge", item.prompt_mode || ""));
+          const detail = element("div");
+          detail.hidden = true;
+          row.addEventListener("click", async () => {
+            if (!detail.hidden) {
+              detail.hidden = true;
+              return;
+            }
+            detail.hidden = false;
+            detail.replaceChildren(element("p", "result-meta", "Loading assessment…"));
+            try {
+              const record = await fetch(`/assessments/${encodeURIComponent(item.assessment_id)}`).then(readJson);
+              detail.replaceChildren(renderHistoryDetail(record));
+              const report = element("a", "download", "Open PDF report");
+              report.href = "#reports";
+              report.addEventListener("click", event => {
+                event.preventDefault();
+                selectedReport = item.assessment_id;
+                showView("reports");
+              });
+              detail.append(report);
+            } catch (error) {
+              detail.replaceChildren(element("div", "error", error.message));
+            }
+          });
+          const block = element("div");
+          block.append(row, detail);
+          list.append(block);
+        });
+        body.replaceChildren(list);
+      } catch (error) {
+        body.replaceChildren(element("div", "error", error.message));
+      }
+    }
+
+    async function loadReports() {
+      const body = document.getElementById("reports-body");
+      body.replaceChildren(element("div", "loading", "Loading reports…"));
+      try {
+        await refreshCounts();
+        if (!historyCache.length) {
+          const empty = element("div", "empty");
+          const inner = element("div", "empty-inner");
+          inner.append(element("h2", "", "No reports yet"));
+          inner.append(element("p", "", "A PDF is created whenever an assessment finishes."));
+          empty.append(inner);
+          body.replaceChildren(empty);
+          return;
+        }
+        if (!selectedReport) selectedReport = historyCache[0].assessment_id;
+        const layout = element("div", "report-layout");
+        const list = element("div", "report-list");
+        historyCache.forEach(item => {
+          const row = element("button", `row${item.assessment_id === selectedReport ? " selected" : ""}`);
+          row.type = "button";
+          const title = element("div");
+          title.append(element("h3", "", `${item.score}/100 · ${item.grade}`));
+          title.append(element("p", "", item.created_at || item.assessment_id));
+          row.append(title);
+          row.addEventListener("click", () => {
+            selectedReport = item.assessment_id;
+            loadReports();
+          });
+          list.append(row);
+        });
+        const preview = element("div");
+        const actions = element("div", "actions");
+        const download = element("a", "download", "Download PDF");
+        download.href = `/reports/${encodeURIComponent(selectedReport)}`;
+        download.setAttribute("download", `HisarGPT-${selectedReport}.pdf`);
+        actions.append(download);
+        const frame = element("iframe", "report-frame");
+        frame.title = "Assessment report preview";
+        frame.src = `/reports/${encodeURIComponent(selectedReport)}`;
+        preview.append(actions, frame);
+        layout.append(list, preview);
+        body.replaceChildren(layout);
+      } catch (error) {
+        body.replaceChildren(element("div", "error", error.message));
+      }
+    }
+
+    async function renderRegistry() {
+      const host = document.getElementById("registry-agents");
+      host.replaceChildren(element("div", "loading", "Loading registry…"));
+      try {
+        const registry = await fetch("/registry").then(readJson);
+        host.replaceChildren();
+        registry.agents.forEach(agent => {
+          const card = element("div", "registry-card");
+          const input = element("input");
+          input.type = "checkbox";
+          input.name = "enabled_agents";
+          input.value = agent.name;
+          input.checked = agent.enabled;
+          const copy = element("div");
+          copy.append(element("h3", "", agent.short));
+          copy.append(element("p", "", agent.task));
+          card.append(input, copy, element("span", `badge ${agent.triage}`, agent.triage));
+          host.append(card);
+        });
+        const defaults = registry.defaults;
+        document.getElementById("registry-target").value = defaults.target_url;
+        document.getElementById("registry-evaluator").value = defaults.evaluator;
+        document.getElementById("registry-mode").value = defaults.prompt_mode;
+        document.getElementById("registry-predefined").value = defaults.requests_per_agent;
+        document.getElementById("registry-adaptive").value = defaults.adaptive_per_agent;
+        document.getElementById("registry-budget").value = defaults.max_requests;
+      } catch (error) {
+        host.replaceChildren(element("div", "error", error.message));
+      }
+    }
+
+    document.getElementById("add-model-btn").addEventListener("click", () => addFineTunedModel());
+    document.getElementById("btn-add-zephyr")?.addEventListener("click", () => addFineTunedModel(HF_PRESETS[0]));
+    document.getElementById("btn-add-phi3")?.addEventListener("click", () => addFineTunedModel(HF_PRESETS[1]));
+    document.getElementById("btn-add-both-presets")?.addEventListener("click", () => {
+      addFineTunedModel(HF_PRESETS[0]);
+      addFineTunedModel(HF_PRESETS[1]);
+    });
+
+    // Mode toggle buttons (DOM is ready at script execution time)
+    document.getElementById("btn-mode-unauth")?.addEventListener("click", () => setMode("unauthenticated"));
+    document.getElementById("btn-mode-auth")?.addEventListener("click", () => setMode("authenticated"));
+    // Source chips for prior information
+    document.getElementById("source-chips")?.addEventListener("click", event => {
+      const chip = event.target.closest(".source-chip");
+      if (!chip) return;
+      document.querySelectorAll("#source-chips .source-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      document.getElementById("prior-source-value").value = chip.dataset.source;
+    });
+
+    document.getElementById("finding-filters").addEventListener("click", event => {
+      const chip = event.target.closest(".chip");
+      if (!chip) return;
+      findingFilter = chip.dataset.filter;
+      document.querySelectorAll("#finding-filters .chip").forEach(item => item.classList.toggle("active", item === chip));
+      renderFindings();
+    });
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => showView(btn.dataset.view));
+    });
+    document.getElementById("logo-home").addEventListener("click", event => {
+      event.preventDefault();
+      showView("assessment");
+    });
+    window.addEventListener("hashchange", () => showView(location.hash.replace("#", "")));
+
+    ["requests-per-agent", "adaptive-per-agent", "prompt-mode", "max-requests", "target-url", "evaluator"].forEach(id => {
+      document.getElementById(id).addEventListener("input", () => { formDirty = true; updateBudgetSummary(); });
+      document.getElementById(id).addEventListener("change", () => { formDirty = true; updateBudgetSummary(); });
+    });
 
     form.addEventListener("submit", async event => {
       event.preventDefault();
       if (!form.reportValidity()) return;
+      if (!updateBudgetSummary()) {
+        showError("Select at least one agent and set a total request budget that covers the selected tests.");
+        return;
+      }
       button.disabled = true;
       button.textContent = "Assessment running…";
       const loading = element("div", "loading");
@@ -258,35 +2706,77 @@
       loadingInner.append(element("div", "", "Sending bounded requests to your local target…"));
       loading.append(loadingInner);
       results.replaceChildren(loading);
-
       const payload = {
         target_url: document.getElementById("target-url").value.trim(),
         authorization_confirmed: document.getElementById("authorization").checked,
         evaluator: document.getElementById("evaluator").value,
+        selected_agents: agentInputs().filter(input => input.checked).map(input => input.value),
+        prompt_mode: document.getElementById("prompt-mode").value,
+        requests_per_agent: Number(document.getElementById("requests-per-agent").value),
+        adaptive_per_agent: Number(document.getElementById("adaptive-per-agent").value),
         max_requests: Number(document.getElementById("max-requests").value),
-        mode: "unauthenticated"
+        mode: currentMode,
+        prior_source: currentMode === "authenticated" ? (document.getElementById("prior-source-value").value || "both") : "none",
+        prior_information: currentMode === "authenticated" ? collectPriorInformation() : {},
+        pentest_agents: collectFineTunedModels(),
+        fine_tuned_models: collectFineTunedModels()
       };
       try {
-        const response = await fetch("/assessments/run", {
+        const data = await fetch("/assessments/run", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          const detail = typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || data);
-          throw new Error(detail || `Request failed (${response.status})`);
-        }
+        }).then(readJson);
         renderResult(data);
+        await refreshCounts();
       } catch (error) {
         showError(error instanceof TypeError
           ? "Could not reach the HisarGPT API. Make sure the API server is running, then try again."
           : error.message);
       } finally {
         button.disabled = false;
-        button.textContent = "Run local assessment";
+        button.textContent = "⚡ Launch Security Assessment";
       }
     });
+
+    document.getElementById("registry-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const message = document.getElementById("registry-message");
+      const enabled = [...document.querySelectorAll('#registry-agents input[name="enabled_agents"]')]
+        .filter(input => input.checked).map(input => input.value);
+      if (!enabled.length) {
+        message.replaceChildren(element("div", "error", "Enable at least one agent."));
+        return;
+      }
+      const payload = {
+        enabled_agents: enabled,
+        target_url: document.getElementById("registry-target").value.trim(),
+        evaluator: document.getElementById("registry-evaluator").value,
+        prompt_mode: document.getElementById("registry-mode").value,
+        requests_per_agent: Number(document.getElementById("registry-predefined").value),
+        adaptive_per_agent: Number(document.getElementById("registry-adaptive").value),
+        max_requests: Number(document.getElementById("registry-budget").value)
+      };
+      try {
+        const registry = await fetch("/registry", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).then(readJson);
+        formDirty = false;
+        applyRegistry(registry, true);
+        message.replaceChildren(element("div", "ok", "Registry saved. Assessment now uses these agents and defaults."));
+      } catch (error) {
+        message.replaceChildren(element("div", "error", error.message));
+      }
+    });
+
+    loadRegistry(true).catch(() => updateBudgetSummary());
+    refreshCounts();
+    showView(location.hash.replace("#", "") || "assessment");
+    addFineTunedModel(HF_PRESETS[0]);
+    addFineTunedModel(HF_PRESETS[1]);
   </script>
+
 </body>
 </html>
